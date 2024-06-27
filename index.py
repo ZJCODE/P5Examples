@@ -255,7 +255,10 @@ if success or init_image:
         script = script.replace("$$GoodHeight$$",str(500))
         print("Error")
     with play:
-        draw_script(script,height = height - 490)
+        try:
+            draw_script(script,height = height - 490)
+        except:
+            draw_script(script,height = 500)
 else:
     with play:
         _,c,_ = st.columns([5,6,1])
