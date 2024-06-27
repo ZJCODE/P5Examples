@@ -4,7 +4,7 @@ import requests
 from streamlit_js_eval import streamlit_js_eval
 
 # Set page config
-st.set_page_config(page_title='Art Play',
+st.set_page_config(page_title='Image Particles',
                    page_icon='🎨', 
                    layout='wide',
                    initial_sidebar_state='collapsed')
