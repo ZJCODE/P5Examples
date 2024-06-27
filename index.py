@@ -102,18 +102,21 @@ if uploaded_file:
                 if response.json()['code'] == "image_repeated":
                     url = response.json()['images']
                     success = True
+                    init_image = None
+                    # add url to hash set
+                    st.session_state.image_hash_set[hash(uploaded_file.name)] = url
                 elif response.json()['code'] == "success":
                     url = response.json()['data']['url']
                     delete_url = response.json()['data']['delete']
                     success = True
                     init_image = None
+                    # add url to hash set
+                    st.session_state.image_hash_set[hash(uploaded_file.name)] = url
                 else:
                     st.error(f"图片上传失败 稍后再试")
         except Exception as e:
             st.error(f"图片上传失败 稍后再试")
             st.error(e)
-        if success:
-            st.session_state.image_hash_set[hash(uploaded_file.name)] = url
     else:
         url = st.session_state.image_hash_set[hash(uploaded_file.name)]
         success = True
@@ -258,7 +261,7 @@ if success or init_image:
         script = script.replace("$$GoodHeight$$",str(height - 490))
     except:
         script = script.replace("$$GoodHeight$$",str(500))
-        print("Error")
+        print("GoodHeight Error")
     with play:
         try:
             draw_script(script,height = height - 490)
