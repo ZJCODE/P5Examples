@@ -255,6 +255,10 @@ if success or init_image:
         script = script.replace("$$GoodHeight$$",str(500))
         print("Error")
     with play:
+        if init_image:
+            _,c,_ = st.columns([5,6,1])
+            with c:
+                st.caption("示例图片,可上传自己的图片")
         try:
             draw_script(script,height = height - 490)
         except:
