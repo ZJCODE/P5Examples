@@ -69,8 +69,8 @@ else:
 c1,c2 = st.columns([1,6],gap="large")
 
 with c1:
-    pixel_step = st.slider("像素间距", 1, 50, 30, 1)
-    pixel_size = st.slider("像素大小", 1, 50, 40, 1)
+    pixel_step = st.slider("像素间距", 5, 50, 30, 1)
+    pixel_size = st.slider("像素大小", 1, 100, 40, 1)
     damping = st.slider("像素灵敏度", 0.01, 0.2, 0.05, 0.01)
     force = st.slider("交互力度", 0, 20000, 5000, 1000)
     roate_degree = st.slider("像素旋转角度", 0, 360, 30, 1)
