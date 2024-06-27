@@ -162,7 +162,7 @@ if uploaded_file:
         
 
         function particle(target,color) {
-        this.s = createVector(random(width), random(height));
+        this.s = createVector(random(width) - ( width/2 - 25 - img.width/2 ), random(height));
         this.v = createVector(0,0);
         this.a = createVector(0,0);
         this.target = target;
