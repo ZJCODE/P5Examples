@@ -186,7 +186,7 @@ if success or init_image:
     this.color = color;
 
     this.update = () => {
-        let mouse = createVector(mouseX - ( width/2 - 25 - img.width/2 ), mouseY);
+        let mouse = createVector(mouseX - ( width/2 - img.width/2 ), mouseY);
         let mouseVec = p5.Vector.sub( mouse, this.s );
         let d = p5.Vector.mag(mouseVec);
         if (wave){
@@ -214,7 +214,7 @@ if success or init_image:
         }
         
         push();
-        translate(this.s.x + ( width/2 - 25 - img.width/2) ,this.s.y);
+        translate(this.s.x + ( width/2 - img.width/2) ,this.s.y);
         // 30 度旋转
         rotate($$roate_degree$$ * PI / 180);
         rect(0,0, pixel_size);
