@@ -69,6 +69,7 @@ with c1:
     damping = st.slider("像素灵敏度", 0.01, 0.2, 0.05, 0.01)
     force = st.slider("交互力度", 0, 20000, 5000, 1000)
     roate_degree = st.slider("像素旋转角度", 0, 360, 0, 1)
+    # update 
     # gray_filter = st.slider("灰度过滤", 0, 255, 255, 1)
     gray_filter = 255
     show_color = True
