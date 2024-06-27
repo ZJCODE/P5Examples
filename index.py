@@ -86,7 +86,7 @@ with c2:
     except:
         play = st.container(height=540)
     note = st.empty()
-uploaded_file = st.file_uploader("上传图片", type=['jpg', 'png', 'jpeg'])
+uploaded_file = st.file_uploader("自定义上传图片", type=['jpg', 'png', 'jpeg'])
 # 使用requests post上传图片
 # https://doc.sm.ms/#api-User
 # https://sm.ms/home/
