@@ -33,22 +33,45 @@ if 'image_hash_set' not in st.session_state:
 
 
 page_select = st_navbar(    
-                 pages=["ArtPlay Image"],
+                 pages=["ArtPlay Image Particles"],
                  styles = styles,
                  options={"use_padding": False,"show_menu": False,"show_sidebar": False}
                  )
-st.caption('Art Play is a fun app that lets you create art with your images. Upload an image and see the magic happen!')
+
+st.markdown(
+        """
+        <style>
+        .note {
+            width: 100%;
+            background-color: #ffffff; /* White background */
+            text-align: left;
+            padding: 10px 0;
+            color: #888888; /* Black text */
+            font-size: 14px; /* Font size */
+        }
+        .note a {
+            /* text-decoration: none; Remove underline */
+            color: #888888; /* Set link color */
+        }
+        </style>
+        <div class="note">
+        上传图片,调整参数去感受不同的效果吧! 本交互由 p5.js 构建, 基础使用可参考 <a href="https://p5refs.streamlit.app/" target="_blank">速查手册</a> , 此外可去 <a href="https://artplay.streamlit.app/" target="_blank">ArtPlay</a> 进一步学习
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 c1,c2 = st.columns([1,6],gap="large")
 
 with c1:
-    height = streamlit_js_eval(js_expressions='screen.height', key = 'SCR1',want_output = True)
     pixel_step = st.slider("像素步长", 1, 100, 15, 1)
     pixel_size = st.slider("像素大小", 1, 100, 10, 1)
     damping = st.slider("阻尼", 0.01, 0.1, 0.05, 0.01)
     force = st.slider("力度", 0, 20000, 5000, 1000)
-    gray_filter = st.slider("灰度过滤", 0, 255, 255, 1)
+    # gray_filter = st.slider("灰度过滤", 0, 255, 255, 1)
+    gray_filter = 255
     show_color = st.toggle("显示颜色", True)
+    height = streamlit_js_eval(js_expressions='screen.height', key = 'SCR1',want_output = True)
 with c2:
     try:
         play = st.container(height=(height - 450))
@@ -220,3 +243,8 @@ if uploaded_file:
     else:
         with play:
             st.error("图片上传失败 稍后再试")
+else:
+    with play:
+        _,c,_ = st.columns([5,6,1])
+        with c:
+            st.caption("  请先上传图片")
