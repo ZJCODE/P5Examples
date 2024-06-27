@@ -61,7 +61,10 @@ st.markdown(
         unsafe_allow_html=True
     )
 
-init_image = "https://s2.loli.net/2024/06/27/FL9OlsIauPd7fnm.jpg"
+if len(st.session_state.image_hash_set) == 0:
+    init_image = "https://s2.loli.net/2024/06/27/FL9OlsIauPd7fnm.jpg"
+else:
+    init_image = None
 
 c1,c2 = st.columns([1,6],gap="large")
 
