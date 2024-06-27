@@ -61,14 +61,16 @@ st.markdown(
         unsafe_allow_html=True
     )
 
+init_image = "https://s2.loli.net/2024/06/27/c7EuUKV3rgnD5sj.png"
+
 c1,c2 = st.columns([1,6],gap="large")
 
 with c1:
-    pixel_step = st.slider("像素间距", 1, 50, 15, 1)
-    pixel_size = st.slider("像素大小", 1, 50, 10, 1)
+    pixel_step = st.slider("像素间距", 1, 50, 27, 1)
+    pixel_size = st.slider("像素大小", 1, 50, 36, 1)
     damping = st.slider("像素灵敏度", 0.01, 0.2, 0.05, 0.01)
     force = st.slider("交互力度", 0, 20000, 5000, 1000)
-    roate_degree = st.slider("像素旋转角度", 0, 360, 0, 1)
+    roate_degree = st.slider("像素旋转角度", 0, 360, 30, 1)
     # update 
     # gray_filter = st.slider("灰度过滤", 0, 255, 255, 1)
     gray_filter = 255
@@ -87,8 +89,8 @@ uploaded_file = st.file_uploader("上传图片", type=['jpg', 'png', 'jpeg'])
 # https://sm.ms/home/
 url = "https://sm.ms/api/v2/upload"
 headers = {'Authorization': "LF743DhFsJMlBSkTIX5I7hqqDUvKOdzh"}
+success = False
 if uploaded_file:
-    success = False
     if hash(uploaded_file.name) not in st.session_state.image_hash_set:
         files = {'smfile': uploaded_file.read()}
         try:
@@ -101,6 +103,7 @@ if uploaded_file:
                     url = response.json()['data']['url']
                     delete_url = response.json()['data']['delete']
                     success = True
+                    init_image = None
                 else:
                     st.error(f"图片上传失败 稍后再试")
         except Exception as e:
@@ -109,150 +112,150 @@ if uploaded_file:
     else:
         url = st.session_state.image_hash_set[hash(uploaded_file.name)]
         success = True
-    if success:
-        note.caption("点击画面后按键盘G键保存5秒的GIF，按键盘S键保存当前图片，按键盘P键暂停/继续动画，按键盘R键重绘画面")
-        script = """
-        let img;
-        let step = $$pixel_step$$;
-        let pixel_size = $$pixel_size$$;
-        let show_color = $$show_color$$;
-        let damping = $$damping$$;
-        let force = $$force$$;
-        let filter_threshold = $$gray_filter$$;
-        let background_color = "#ffffff"; // 背景颜色
-        let wave = false;
-        let wave_size = 1;
+        init_image = None
+if success or init_image:
+    if init_image:
+        url = init_image
+    note.caption("点击画面后按键盘G键保存5秒的GIF，按键盘S键保存当前图片，按键盘P键暂停/继续动画，按键盘R键重绘画面")
+    script = """
+    let img;
+    let step = $$pixel_step$$;
+    let pixel_size = $$pixel_size$$;
+    let show_color = $$show_color$$;
+    let damping = $$damping$$;
+    let force = $$force$$;
+    let filter_threshold = $$gray_filter$$;
+    let background_color = "#ffffff"; // 背景颜色
+    let wave = false;
+    let wave_size = 1;
 
-        function preload() {
-        // 加载图片
-        img = loadImage('$$image_url$$');
-        }
-        
-        
-        function init_particles(){
-            particles = [];
-            for (let i = 0; i < img.width; i += step) {
-                for (let j = 0; j < img.height; j += step) {
-                let color = img.get(i, j);
-                let img_gray = color[0]*0.299 + color[1]*0.587 + color[2]*0.114;
-                if (img_gray <= filter_threshold){
-                    particles.push(new particle( createVector(i,j),img.get(i,j))); 
-                }
-            }
+    function preload() {
+    // 加载图片
+    img = loadImage('$$image_url$$');
+    }
+    
+    
+    function init_particles(){
+        particles = [];
+        for (let i = 0; i < img.width; i += step) {
+            for (let j = 0; j < img.height; j += step) {
+            let color = img.get(i, j);
+            let img_gray = color[0]*0.299 + color[1]*0.587 + color[2]*0.114;
+            if (img_gray <= filter_threshold){
+                particles.push(new particle( createVector(i,j),img.get(i,j))); 
             }
         }
+        }
+    }
 
-        function setup() {
-        createCanvas(windowWidth,$$GoodHeight$$);
-        let img_ratio = img.width/img.height;
-        let canvas_ratio = windowWidth/height;
-        if (img_ratio > canvas_ratio){
-            img.resize(windowWidth,0);
+    function setup() {
+    createCanvas(windowWidth,$$GoodHeight$$);
+    let img_ratio = img.width/img.height;
+    let canvas_ratio = windowWidth/height;
+    if (img_ratio > canvas_ratio){
+        img.resize(windowWidth,0);
+    }else{
+        img.resize(0,height);
+    }
+    img.loadPixels();     
+    init_particles();   
+    }
+
+    function draw() {
+    background(background_color);
+    for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].display();
+    }
+    }
+    
+
+    function particle(target,color) {
+    this.s = createVector(random(width) - ( width/2 - 25 - img.width/2 ), random(height));
+    this.v = createVector(0,0);
+    this.a = createVector(0,0);
+    this.target = target;
+    this.color = color;
+
+    this.update = () => {
+        let mouse = createVector(mouseX - ( width/2 - 25 - img.width/2 ), mouseY);
+        let mouseVec = p5.Vector.sub( mouse, this.s );
+        let d = p5.Vector.mag(mouseVec);
+        if (wave){
+            mouseVec.mult( - force/pow(d, 2) - force/pow(d, 2)*sin(d/wave_size));
         }else{
-            img.resize(0,height);
+            mouseVec.mult( - force/pow(d, 2));
         }
-        img.loadPixels();     
-        init_particles();   
-        }
+        this.a.add( mouseVec );
+        this.a.add( p5.Vector.sub( this.target, this.s ) );
+        this.v.add( p5.Vector.mult( this.a, damping) );
+        this.s.add( p5.Vector.mult( this.v, damping) );
 
-        function draw() {
-        background(background_color);
-        for (let i = 0; i < particles.length; i++) {
-            particles[i].update();
-            particles[i].display();
-        }
+        this.a.mult(0);
+        this.v.mult(0.9);
+    }
+
+    this.display = () => {
+        if (show_color){
+            stroke(this.color);
+            fill(this.color); // 使用颜色属性
+        }else{
+            gray = this.color[0]*0.299 + this.color[1]*0.587 + this.color[2]*0.114;
+            stroke(gray);
+            fill(gray); // 使用颜色属性
         }
         
+        push();
+        translate(this.s.x + ( width/2 - 25 - img.width/2) ,this.s.y);
+        // 30 度旋转
+        rotate($$roate_degree$$ * PI / 180);
+        rect(0,0, pixel_size);
+        // circle(this.s.x,this.s.y, pixel_size);
+        pop();
+    }
 
-        function particle(target,color) {
-        this.s = createVector(random(width) - ( width/2 - 25 - img.width/2 ), random(height));
-        this.v = createVector(0,0);
-        this.a = createVector(0,0);
-        this.target = target;
-        this.color = color;
-
-        this.update = () => {
-            let mouse = createVector(mouseX - ( width/2 - 25 - img.width/2 ), mouseY);
-            let mouseVec = p5.Vector.sub( mouse, this.s );
-            let d = p5.Vector.mag(mouseVec);
-            if (wave){
-                mouseVec.mult( - force/pow(d, 2) - force/pow(d, 2)*sin(d/wave_size));
-            }else{
-                mouseVec.mult( - force/pow(d, 2));
-            }
-            this.a.add( mouseVec );
-            this.a.add( p5.Vector.sub( this.target, this.s ) );
-            this.v.add( p5.Vector.mult( this.a, damping) );
-            this.s.add( p5.Vector.mult( this.v, damping) );
-
-            this.a.mult(0);
-            this.v.mult(0.9);
+    }
+    
+    // 保存
+    function keyPressed() {
+    // 点击画面后按键盘G键 保存5秒的GIF
+    if (key === 'g') {
+    saveGif('mySketch', 5);
+    }
+    // 点击画面后按键盘S键 保存当前图片
+    if (key === 's') {
+    saveFrames('frame', 'png', 1, 1);
+    }
+    if (key === 'p') {
+        if (isLooping()) {
+            noLoop();
+        } else {
+            loop();
         }
-
-        this.display = () => {
-            if (show_color){
-                stroke(this.color);
-                fill(this.color); // 使用颜色属性
-            }else{
-                gray = this.color[0]*0.299 + this.color[1]*0.587 + this.color[2]*0.114;
-                stroke(gray);
-                fill(gray); // 使用颜色属性
-            }
-            
-            push();
-            translate(this.s.x + ( width/2 - 25 - img.width/2) ,this.s.y);
-            // 30 度旋转
-            rotate($$roate_degree$$ * PI / 180);
-            rect(0,0, pixel_size);
-            // circle(this.s.x,this.s.y, pixel_size);
-            pop();
-        }
-
-        }
-        
-        // 保存
-        function keyPressed() {
-        // 点击画面后按键盘G键 保存5秒的GIF
-        if (key === 'g') {
-        saveGif('mySketch', 5);
-        }
-        // 点击画面后按键盘S键 保存当前图片
-        if (key === 's') {
-        saveFrames('frame', 'png', 1, 1);
-        }
-        if (key === 'p') {
-            if (isLooping()) {
-                noLoop();
-            } else {
-                loop();
-            }
-        }
-        // 按下键盘 r 重绘画面
-        if (key === 'r') {
-            init_particles()
-        }
-        }
-        
-        """
-        script = script.replace("$$image_url$$",url)
-        script = script.replace("$$pixel_step$$",str(pixel_step))
-        script = script.replace("$$pixel_size$$",str(pixel_size))
-        script = script.replace("$$damping$$",str(damping))
-        script = script.replace("$$force$$",str(force))
-        script = script.replace("$$gray_filter$$",str(gray_filter))
-        script = script.replace("$$show_color$$",str(show_color).lower())
-        script = script.replace("$$roate_degree$$",str(roate_degree))
-        
-        try:
-            script = script.replace("$$GoodHeight$$",str(height - 490))
-        except:
-            script = script.replace("$$GoodHeight$$",str(500))
-            print("Error")
-        with play:
-            draw_script(script,height = height - 490)
-    else:
-        with play:
-            st.error("图片上传失败 稍后再试")
+    }
+    // 按下键盘 r 重绘画面
+    if (key === 'r') {
+        init_particles()
+    }
+    }
+    
+    """
+    script = script.replace("$$image_url$$",url)
+    script = script.replace("$$pixel_step$$",str(pixel_step))
+    script = script.replace("$$pixel_size$$",str(pixel_size))
+    script = script.replace("$$damping$$",str(damping))
+    script = script.replace("$$force$$",str(force))
+    script = script.replace("$$gray_filter$$",str(gray_filter))
+    script = script.replace("$$show_color$$",str(show_color).lower())
+    script = script.replace("$$roate_degree$$",str(roate_degree))
+    
+    try:
+        script = script.replace("$$GoodHeight$$",str(height - 490))
+    except:
+        script = script.replace("$$GoodHeight$$",str(500))
+        print("Error")
+    with play:
+        draw_script(script,height = height - 490)
 else:
     with play:
         _,c,_ = st.columns([5,6,1])
