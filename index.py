@@ -68,9 +68,11 @@ with c1:
     pixel_size = st.slider("像素大小", 1, 50, 10, 1)
     damping = st.slider("像素灵敏度", 0.01, 0.2, 0.05, 0.01)
     force = st.slider("交互力度", 0, 20000, 5000, 1000)
+    roate_degree = st.slider("像素旋转角度", 0, 360, 0, 1)
     # gray_filter = st.slider("灰度过滤", 0, 255, 255, 1)
     gray_filter = 255
-    show_color = st.toggle("显示颜色", True)
+    show_color = True
+    # show_color = st.toggle("显示颜色", True)
     height = streamlit_js_eval(js_expressions='screen.height', key = 'SCR1',want_output = True)
 with c2:
     try:
@@ -195,8 +197,14 @@ if uploaded_file:
                 stroke(gray);
                 fill(gray); // 使用颜色属性
             }
-            rect(this.s.x + ( width/2 - 25 - img.width/2) ,this.s.y,pixel_size, pixel_size);
+            
+            push();
+            translate(this.s.x + ( width/2 - 25 - img.width/2) ,this.s.y);
+            // 30 度旋转
+            rotate($$roate_degree$$ * PI / 180);
+            rect(0,0, pixel_size);
             // circle(this.s.x,this.s.y, pixel_size);
+            pop();
         }
 
         }
@@ -232,6 +240,7 @@ if uploaded_file:
         script = script.replace("$$force$$",str(force))
         script = script.replace("$$gray_filter$$",str(gray_filter))
         script = script.replace("$$show_color$$",str(show_color).lower())
+        script = script.replace("$$roate_degree$$",str(roate_degree))
         
         try:
             script = script.replace("$$GoodHeight$$",str(height - 490))
