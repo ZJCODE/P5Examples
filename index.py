@@ -64,10 +64,10 @@ st.markdown(
 c1,c2 = st.columns([1,6],gap="large")
 
 with c1:
-    pixel_step = st.slider("像素间距", 1, 50, 15, 1,help="像素间距越大，像素点越稀疏")
-    pixel_size = st.slider("像素大小", 1, 50, 10, 1,help="像素大小越大，像素点越大")
-    damping = st.slider("像素灵敏度", 0.01, 0.2, 0.05, 0.01,help="像素灵敏度越大，像素点在被鼠标触碰时反应越快")
-    force = st.slider("交互力度", 0, 20000, 5000, 1000,help="交互力度越大，像素点在被鼠标触碰时反应越强烈")
+    pixel_step = st.slider("像素间距", 1, 50, 15, 1)
+    pixel_size = st.slider("像素大小", 1, 50, 10, 1)
+    damping = st.slider("像素灵敏度", 0.01, 0.2, 0.05, 0.01)
+    force = st.slider("交互力度", 0, 20000, 5000, 1000)
     # gray_filter = st.slider("灰度过滤", 0, 255, 255, 1)
     gray_filter = 255
     show_color = st.toggle("显示颜色", True)
