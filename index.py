@@ -64,9 +64,9 @@ st.markdown(
 c1,c2 = st.columns([1,6],gap="large")
 
 with c1:
-    pixel_step = st.slider("像素步长", 1, 100, 15, 1)
-    pixel_size = st.slider("像素大小", 1, 100, 10, 1)
-    damping = st.slider("阻尼", 0.01, 0.1, 0.05, 0.01)
+    pixel_step = st.slider("像素步长", 1, 50, 15, 1)
+    pixel_size = st.slider("像素大小", 1, 50, 10, 1)
+    damping = st.slider("阻尼", 0.01, 0.2, 0.05, 0.01)
     force = st.slider("力度", 0, 20000, 5000, 1000)
     # gray_filter = st.slider("灰度过滤", 0, 255, 255, 1)
     gray_filter = 255
