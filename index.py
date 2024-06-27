@@ -112,6 +112,8 @@ if uploaded_file:
         except Exception as e:
             st.error(f"图片上传失败 稍后再试")
             st.error(e)
+        if success:
+            st.session_state.image_hash_set[hash(uploaded_file.name)] = url
     else:
         url = st.session_state.image_hash_set[hash(uploaded_file.name)]
         success = True
