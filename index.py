@@ -103,6 +103,11 @@ with c1:
         else:
             gray_filter = 255
         rect_split_width_and_height = st.toggle("矩形区分长宽", False,key="rect_split_width_and_height")
+        wave_mode = st.toggle("波动模式", False)
+        if wave_mode:
+            wave_size = st.slider("波动大小", 1, 100, 50, 1)
+        else:
+            wave_size = 0
     height = streamlit_js_eval(js_expressions='screen.height', key = 'SCR1',want_output = True)    
     
 with c2:
@@ -176,8 +181,8 @@ if success or init_image:
     let force = $$force$$;
     let filter_threshold = $$gray_filter$$;
     let background_color = "#ffffff"; // 背景颜色
-    let wave = false;
-    let wave_size = 1;
+    let wave = $$wave_mode$$;
+    let wave_size = $$wave_size$$;
     let pixel_opacity = $$pixel_opacity$$;
 
     let pixel_size_2 = $$pixel_size_2$$;
@@ -324,6 +329,8 @@ if success or init_image:
     script = script.replace("$$pixel_shape$$",pixel_shape)
     script = script.replace("$$pixel_opacity$$",str(pixel_opacity))
     script = script.replace("$$rect_split_width_and_height$$",str(st.session_state.rect_split_width_and_height).lower())
+    script = script.replace("$$wave_mode$$",str(wave_mode).lower())
+    script = script.replace("$$wave_size$$",str(wave_size))
     if pixel_shape == "矩形":
         script = script.replace("$$pixel_size_2$$",str(pixel_size_2))
     
