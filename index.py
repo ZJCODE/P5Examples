@@ -5,7 +5,7 @@ from streamlit_js_eval import streamlit_js_eval
 from streamlit_pills import pills
 
 # Set page config
-st.set_page_config(page_title='Image Particles',
+st.set_page_config(page_title='Image Pixels',
                    page_icon='🎨', 
                    layout='wide',
                    initial_sidebar_state='collapsed')
@@ -36,7 +36,7 @@ if 'rect_split_width_and_height' not in st.session_state:
     st.session_state.rect_split_width_and_height = False
 
 page_select = st_navbar(    
-                 pages=["ArtPlay Image Particles"],
+                 pages=["ArtPlay Image Pixels"],
                  styles = styles,
                  options={"use_padding": False,"show_menu": False,"show_sidebar": False}
                  )
