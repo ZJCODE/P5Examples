@@ -62,7 +62,7 @@ st.markdown(
     )
 
 if len(st.session_state.image_hash_set) == 0:
-    init_image = "https://s2.loli.net/2024/06/27/FL9OlsIauPd7fnm.jpg"
+    init_image = "https://s2.loli.net/2024/06/28/mdHhleWiyjwEtF6.jpg"
 else:
     init_image = None
 
