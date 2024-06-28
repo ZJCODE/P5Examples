@@ -116,7 +116,7 @@ url = "https://sm.ms/api/v2/upload"
 headers = {'Authorization': "LF743DhFsJMlBSkTIX5I7hqqDUvKOdzh"}
 success = False
 if uploaded_file:
-    if uploaded_file.size > 3*1024*1024:
+    if uploaded_file.size > 2*1024*1024:
         # 使用 PIL 做压缩处理 不改变图片长宽比
         from PIL import Image 
         img = Image.open(uploaded_file)
