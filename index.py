@@ -95,7 +95,7 @@ with c1:
             gray_filter = st.slider("灰度过滤", 0, 255, 255, 1)
         else:
             gray_filter = 255
-        rect_split_width_and_height = st.toggle("矩形分别设置宽高", False,key="rect_split_width_and_height")
+        rect_split_width_and_height = st.toggle("矩形区分长宽", False,key="rect_split_width_and_height")
     height = streamlit_js_eval(js_expressions='screen.height', key = 'SCR1',want_output = True)    
     
 with c2:
