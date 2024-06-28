@@ -75,9 +75,9 @@ with c1:
         if pixel_shape == "矩形":
             cc1,cc2 = st.columns(2)
             with cc1:
-                pixel_size = st.slider("像素长度", 1, 200, 40, 1)
+                pixel_size = st.slider("像素大小(长)", 1, 200, 40, 1)
             with cc2:
-                pixel_size_2 = st.slider("像素宽度", 1, 200, 40, 1)
+                pixel_size_2 = st.slider("像素大小(宽)", 1, 200, 40, 1)
         else:
             pixel_size = st.slider("像素大小", 1, 200, 40, 1)
         pixel_opacity = st.slider("像素透明度", 0, 255, 75, 1)
