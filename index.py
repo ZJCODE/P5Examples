@@ -121,7 +121,7 @@ if uploaded_file:
         from PIL import Image 
         img = Image.open(uploaded_file)
         img = img.convert('RGB')
-        img.thumbnail((1024,1024)) # 限制最大边长为 1024
+        img.thumbnail((2048, 2048)) # 限制图片最大边长为 2048
         buffer = io.BytesIO()
         img.save(buffer, format="JPEG")
         buffer.seek(0)  # 重置 buffer 指针到起始位置
