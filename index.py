@@ -105,7 +105,7 @@ with c1:
         rect_split_width_and_height = st.toggle("矩形区分长宽", False,key="rect_split_width_and_height")
         wave_mode = st.toggle("波动模式", False)
         if wave_mode:
-            wave_size = st.slider("波动大小", 1, 100, 50, 1)
+            wave_size = st.slider("波动大小", 1, 100, 20, 1)
         else:
             wave_size = 0
     height = streamlit_js_eval(js_expressions='screen.height', key = 'SCR1',want_output = True)    
