@@ -78,11 +78,11 @@ with c1:
         if pixel_shape == "矩形" and st.session_state.rect_split_width_and_height:
             cc1,cc2 = st.columns(2)
             with cc1:
-                pixel_size = st.slider("像素长度", 1, 200, 40, 1)
+                pixel_size = st.slider("像素长度", 1, 100, 40, 1)
             with cc2:
-                pixel_size_2 = st.slider("像素宽度", 1, 200, 40, 1)
+                pixel_size_2 = st.slider("像素宽度", 1, 100, 40, 1)
         else:
-            pixel_size = st.slider("像素大小", 1, 200, 40, 1)
+            pixel_size = st.slider("像素大小", 1, 100, 40, 1)
             pixel_size_2 = 0
         pixel_opacity = st.slider("像素透明度", 0, 255, 25, 1)
         roate_degree = st.slider("像素旋转角度", 0, 360, 25, 1)
