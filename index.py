@@ -36,6 +36,9 @@ if 'image_hash_set' not in st.session_state:
 if 'rect_split_width_and_height' not in st.session_state:
     st.session_state.rect_split_width_and_height = False
 
+if 'show_color' not in st.session_state:
+    st.session_state.show_color = True
+
 page_select = st_navbar(    
                  pages=["ArtPlay Image Pixels"],
                  styles = styles,
@@ -75,7 +78,10 @@ c1,c2 = st.columns([1,5])
 with c1:
     with st.expander("像素参数"):
         pixel_shape = pills("像素形状", ["矩形","圆形","三角形"], key="pills_interactive",index=0)
-        pixel_step = st.slider("像素间距", 5, 50, 20, 1)
+        if st.session_state.show_color:
+            pixel_step = st.slider("像素间距", 5, 50, 20, 1)
+        else:
+            pixel_step = st.slider("像素间距", 1, 50, 20, 1)
         if pixel_shape == "矩形" and st.session_state.rect_split_width_and_height:
             cc1,cc2 = st.columns(2)
             with cc1:
@@ -91,9 +97,9 @@ with c1:
         damping = st.slider("像素灵敏度", 0.01, 0.2, 0.05, 0.01)
         force = st.slider("交互力度", 0, 20000, 3000, 1000)
     with st.expander("其他参数"):
-        show_color = st.toggle("显示颜色", True)
+        show_color = st.toggle("显示颜色", True,key="show_color")
         if not show_color:
-            gray_filter = st.slider("灰度过滤", 0, 255, 255, 1)
+            gray_filter = st.slider("灰度过滤", 0, 255, 250, 1)
         else:
             gray_filter = 255
         rect_split_width_and_height = st.toggle("矩形区分长宽", False,key="rect_split_width_and_height")
