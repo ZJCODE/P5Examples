@@ -249,6 +249,7 @@ if success or init_image:
         // 30 度旋转
         rotate($$roate_degree$$ * PI / 180);
         if (pixel_shape == "矩形") {
+            rectMode(CENTER);
             if (rect_split_width_and_height) {
             rect(0,0, pixel_size,pixel_size_2);
             }else{
