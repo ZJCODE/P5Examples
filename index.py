@@ -3,6 +3,7 @@ from utils import draw_script
 import requests
 from streamlit_js_eval import streamlit_js_eval
 from streamlit_pills import pills
+import io
 
 # Set page config
 st.set_page_config(page_title='Image Pixels',
@@ -106,11 +107,7 @@ with c2:
     note = st.empty()
 uploaded_file = st.file_uploader("自定义上传图片", type=['jpg', 'png', 'jpeg'])
 
-# 判断 uploaded_file 的大小 不能超过 5MB 如果超过做压缩处理
-if uploaded_file:
-    if uploaded_file.size > 5*1024*1024:
-        st.error("上传图片不能超过 5MB")
-        uploaded_file = None
+
 
 # 使用requests post上传图片
 # https://doc.sm.ms/#api-User
@@ -119,8 +116,20 @@ url = "https://sm.ms/api/v2/upload"
 headers = {'Authorization': "LF743DhFsJMlBSkTIX5I7hqqDUvKOdzh"}
 success = False
 if uploaded_file:
+    if uploaded_file.size > 3*1024*1024:
+        # 使用 PIL 做压缩处理 不改变图片长宽比
+        from PIL import Image 
+        img = Image.open(uploaded_file)
+        img = img.convert('RGB')
+        img.thumbnail((1024,1024)) # 限制最大边长为 1024
+        buffer = io.BytesIO()
+        img.save(buffer, format="JPEG")
+        buffer.seek(0)  # 重置 buffer 指针到起始位置
+    else:
+        buffer = uploaded_file.read()
+    
     if hash(uploaded_file.name) not in st.session_state.image_hash_set:
-        files = {'smfile': uploaded_file.read()}
+        files = {'smfile': buffer}
         try:
             with st.spinner("图片上传中..."):
                 response = requests.post(url, headers=headers, files=files)
