@@ -227,8 +227,8 @@ if success or init_image:
             fill(this.color); // 使用颜色属性
         }else{
             gray = this.color[0]*0.299 + this.color[1]*0.587 + this.color[2]*0.114;
-            stroke(gray);
-            fill(gray); // 使用颜色属性
+            stroke(gray,pixel_opacity);
+            fill(gray,pixel_opacity); // 使用颜色属性
         }
         
         push();
