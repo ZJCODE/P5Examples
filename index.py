@@ -75,11 +75,11 @@ with c1:
         if pixel_shape == "矩形":
             cc1,cc2 = st.columns(2)
             with cc1:
-                pixel_size = st.slider("像素长度", 1, 100, 40, 1)
+                pixel_size = st.slider("像素长度", 1, 200, 40, 1)
             with cc2:
-                pixel_size_2 = st.slider("像素宽度", 1, 100, 40, 1)
+                pixel_size_2 = st.slider("像素宽度", 1, 200, 40, 1)
         else:
-            pixel_size = st.slider("像素大小", 1, 100, 40, 1)
+            pixel_size = st.slider("像素大小", 1, 200, 40, 1)
         pixel_opacity = st.slider("像素透明度", 0, 255, 75, 1)
         roate_degree = st.slider("像素旋转角度", 0, 360, 25, 1)
     with st.expander("交互参数"):
@@ -100,6 +100,13 @@ with c2:
         play = st.container(height=540)
     note = st.empty()
 uploaded_file = st.file_uploader("自定义上传图片", type=['jpg', 'png', 'jpeg'])
+
+# 判断 uploaded_file 的大小 不能超过 5MB 如果超过做压缩处理
+if uploaded_file:
+    if uploaded_file.size > 5*1024*1024:
+        st.error("上传图片不能超过 5MB")
+        uploaded_file = None
+
 # 使用requests post上传图片
 # https://doc.sm.ms/#api-User
 # https://sm.ms/home/
