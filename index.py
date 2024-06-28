@@ -2,6 +2,7 @@ import streamlit as st
 from utils import draw_script
 import requests
 from streamlit_js_eval import streamlit_js_eval
+from streamlit_pills import pills
 
 # Set page config
 st.set_page_config(page_title='Image Particles',
@@ -30,7 +31,6 @@ styles = {
 
 if 'image_hash_set' not in st.session_state:
     st.session_state.image_hash_set = dict()
-
 
 page_select = st_navbar(    
                  pages=["ArtPlay Image Particles"],
@@ -66,20 +66,33 @@ if len(st.session_state.image_hash_set) == 0:
 else:
     init_image = None
 
-c1,c2 = st.columns([1,6],gap="large")
+c1,c2 = st.columns([1,5])
 
 with c1:
-    pixel_step = st.slider("像素间距", 5, 50, 30, 1)
-    pixel_size = st.slider("像素大小", 1, 100, 40, 1)
-    damping = st.slider("像素灵敏度", 0.01, 0.2, 0.05, 0.01)
-    force = st.slider("交互力度", 0, 20000, 5000, 1000)
-    roate_degree = st.slider("像素旋转角度", 0, 360, 30, 1)
-    # update 
-    # gray_filter = st.slider("灰度过滤", 0, 255, 255, 1)
-    gray_filter = 255
-    show_color = True
-    # show_color = st.toggle("显示颜色", True)
-    height = streamlit_js_eval(js_expressions='screen.height', key = 'SCR1',want_output = True)
+    with st.expander("像素参数"):
+        pixel_shape = pills("像素形状", ["矩形","圆形","三角形"], key="pills_interactive",index=0)
+        pixel_step = st.slider("像素间距", 5, 50, 30, 1)
+        if pixel_shape == "矩形":
+            cc1,cc2 = st.columns(2)
+            with cc1:
+                pixel_size = st.slider("像素长度", 1, 100, 40, 1)
+            with cc2:
+                pixel_size_2 = st.slider("像素宽度", 1, 100, 40, 1)
+        else:
+            pixel_size = st.slider("像素大小", 1, 100, 40, 1)
+        pixel_opacity = st.slider("像素透明度", 0, 255, 255, 1)
+        roate_degree = st.slider("像素旋转角度", 0, 360, 30, 1)
+    with st.expander("交互参数"):
+        damping = st.slider("像素灵敏度", 0.01, 0.2, 0.05, 0.01)
+        force = st.slider("交互力度", 0, 20000, 3000, 1000)
+    with st.expander("其他参数"):
+        show_color = st.toggle("显示颜色", True)
+        if not show_color:
+            gray_filter = st.slider("灰度过滤", 0, 255, 255, 1)
+        else:
+            gray_filter = 255
+    height = streamlit_js_eval(js_expressions='screen.height', key = 'SCR1',want_output = True)    
+    
 with c2:
     try:
         play = st.container(height=(height - 450))
@@ -126,7 +139,9 @@ if success or init_image:
         url = init_image
     note.caption("点击画面后按键盘G键保存2秒的GIF，按键盘S键保存当前图片，按键盘P键暂停/继续动画，按键盘R键重绘画面")
     script = """
+    
     let img;
+    let pixel_shape = "$$pixel_shape$$";
     let step = $$pixel_step$$;
     let pixel_size = $$pixel_size$$;
     let show_color = $$show_color$$;
@@ -136,6 +151,9 @@ if success or init_image:
     let background_color = "#ffffff"; // 背景颜色
     let wave = false;
     let wave_size = 1;
+    let pixel_opacity = $$pixel_opacity$$;
+
+    let pixel_size_2 = $$pixel_size_2$$;
 
     function preload() {
     // 加载图片
@@ -183,7 +201,7 @@ if success or init_image:
     this.v = createVector(0,0);
     this.a = createVector(0,0);
     this.target = target;
-    this.color = color;
+    this.color = [color[0],color[1],color[2],pixel_opacity];
 
     this.update = () => {
         let mouse = createVector(mouseX - ( width/2 - img.width/2 ), mouseY);
@@ -217,11 +235,25 @@ if success or init_image:
         translate(this.s.x + ( width/2 - img.width/2) ,this.s.y);
         // 30 度旋转
         rotate($$roate_degree$$ * PI / 180);
-        rect(0,0, pixel_size);
-        // circle(this.s.x,this.s.y, pixel_size);
+        if (pixel_shape == "矩形") {
+            rect(0,0, pixel_size,pixel_size_2);
+        }else if (pixel_shape == "圆形") {
+            circle(0,0, pixel_size);
+        }else if (pixel_shape == "三角形") {
+            let points = get_triangle_points(pixel_size);
+            triangle(points[0][0],points[0][1],points[1][0],points[1][1],points[2][0],points[2][1]);
+        }else{
+            rect(0,0, pixel_size,pixel_size_2);
+        }
         pop();
     }
 
+    }
+    
+    // get_triangle_points 函数
+    function get_triangle_points(size){
+        h = size * 3**0.5 / 2;
+        return [[0,-h/2],[size/2,h/2],[-size/2,h/2]];
     }
     
     // 保存
@@ -256,6 +288,10 @@ if success or init_image:
     script = script.replace("$$gray_filter$$",str(gray_filter))
     script = script.replace("$$show_color$$",str(show_color).lower())
     script = script.replace("$$roate_degree$$",str(roate_degree))
+    script = script.replace("$$pixel_shape$$",pixel_shape)
+    script = script.replace("$$pixel_opacity$$",str(pixel_opacity))
+    if pixel_shape == "矩形":
+        script = script.replace("$$pixel_size_2$$",str(pixel_size_2))
     
     try:
         script = script.replace("$$GoodHeight$$",str(height - 490))
