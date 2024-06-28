@@ -79,9 +79,9 @@ with c1:
     with st.expander("像素参数"):
         pixel_shape = pills("像素形状", ["矩形","圆形","三角形"], key="pills_interactive",index=0)
         if st.session_state.show_color:
-            pixel_step = st.slider("像素间距", 5, 50, 20, 1)
+            pixel_step = st.slider("像素间距", 3, 50, 20, 1)
         else:
-            pixel_step = st.slider("像素间距", 2, 50, 20, 1,help="调整到小于5的时候需谨慎可能会较卡,最好先灰度过滤一下")
+            pixel_step = st.slider("像素间距", 1, 50, 20, 1,help="调整到小于3的时候需谨慎可能会较卡,最好先灰度过滤一下")
         if pixel_shape == "矩形" and st.session_state.rect_split_width_and_height:
             cc1,cc2 = st.columns(2)
             with cc1:
@@ -95,7 +95,7 @@ with c1:
         roate_degree = st.slider("像素旋转角度", 0, 360, 25, 1)
     with st.expander("交互参数"):
         damping = st.slider("像素灵敏度", 0.01, 0.2, 0.05, 0.01)
-        force = st.slider("交互力度", 0, 20000, 3000, 1000)
+        force = st.slider("交互力度", 0, 20000, 3000, 500)
     with st.expander("其他参数"):
         show_color = st.toggle("显示颜色", True,key="show_color")
         if not show_color:
