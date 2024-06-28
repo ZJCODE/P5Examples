@@ -81,7 +81,7 @@ with c1:
         if st.session_state.show_color:
             pixel_step = st.slider("像素间距", 5, 50, 20, 1)
         else:
-            pixel_step = st.slider("像素间距", 2, 50, 20, 1,help="调整到小于5的时候需谨慎可能会很卡,最好先灰度过滤一下")
+            pixel_step = st.slider("像素间距", 2, 50, 20, 1,help="调整到小于5的时候需谨慎可能会较卡,最好先灰度过滤一下")
         if pixel_shape == "矩形" and st.session_state.rect_split_width_and_height:
             cc1,cc2 = st.columns(2)
             with cc1:
