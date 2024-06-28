@@ -71,7 +71,7 @@ c1,c2 = st.columns([1,5])
 with c1:
     with st.expander("像素参数"):
         pixel_shape = pills("像素形状", ["矩形","圆形","三角形"], key="pills_interactive",index=0)
-        pixel_step = st.slider("像素间距", 5, 50, 30, 1)
+        pixel_step = st.slider("像素间距", 5, 50, 35, 1)
         if pixel_shape == "矩形":
             cc1,cc2 = st.columns(2)
             with cc1:
@@ -80,8 +80,8 @@ with c1:
                 pixel_size_2 = st.slider("像素宽度", 1, 100, 40, 1)
         else:
             pixel_size = st.slider("像素大小", 1, 100, 40, 1)
-        pixel_opacity = st.slider("像素透明度", 0, 255, 255, 1)
-        roate_degree = st.slider("像素旋转角度", 0, 360, 30, 1)
+        pixel_opacity = st.slider("像素透明度", 0, 255, 75, 1)
+        roate_degree = st.slider("像素旋转角度", 0, 360, 25, 1)
     with st.expander("交互参数"):
         damping = st.slider("像素灵敏度", 0.01, 0.2, 0.05, 0.01)
         force = st.slider("交互力度", 0, 20000, 3000, 1000)
