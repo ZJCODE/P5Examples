@@ -31,6 +31,9 @@ styles = {
 
 if 'image_hash_set' not in st.session_state:
     st.session_state.image_hash_set = dict()
+    
+if 'rect_split_width_and_height' not in st.session_state:
+    st.session_state.rect_split_width_and_height = False
 
 page_select = st_navbar(    
                  pages=["ArtPlay Image Particles"],
@@ -72,7 +75,7 @@ with c1:
     with st.expander("像素参数"):
         pixel_shape = pills("像素形状", ["矩形","圆形","三角形"], key="pills_interactive",index=0)
         pixel_step = st.slider("像素间距", 5, 50, 35, 1)
-        if pixel_shape == "矩形":
+        if pixel_shape == "矩形" and st.session_state.rect_split_width_and_height:
             cc1,cc2 = st.columns(2)
             with cc1:
                 pixel_size = st.slider("像素长度", 1, 200, 40, 1)
@@ -80,6 +83,7 @@ with c1:
                 pixel_size_2 = st.slider("像素宽度", 1, 200, 40, 1)
         else:
             pixel_size = st.slider("像素大小", 1, 200, 40, 1)
+            pixel_size_2 = 0
         pixel_opacity = st.slider("像素透明度", 0, 255, 75, 1)
         roate_degree = st.slider("像素旋转角度", 0, 360, 25, 1)
     with st.expander("交互参数"):
@@ -91,6 +95,7 @@ with c1:
             gray_filter = st.slider("灰度过滤", 0, 255, 255, 1)
         else:
             gray_filter = 255
+        rect_split_width_and_height = st.toggle("矩形分别设置宽高", False,key="rect_split_width_and_height")
     height = streamlit_js_eval(js_expressions='screen.height', key = 'SCR1',want_output = True)    
     
 with c2:
@@ -161,6 +166,7 @@ if success or init_image:
     let pixel_opacity = $$pixel_opacity$$;
 
     let pixel_size_2 = $$pixel_size_2$$;
+    let rect_split_width_and_height = $$rect_split_width_and_height$$;
 
     function preload() {
     // 加载图片
@@ -243,7 +249,11 @@ if success or init_image:
         // 30 度旋转
         rotate($$roate_degree$$ * PI / 180);
         if (pixel_shape == "矩形") {
+            if (rect_split_width_and_height) {
             rect(0,0, pixel_size,pixel_size_2);
+            }else{
+            rect(0,0, pixel_size,pixel_size);
+            }
         }else if (pixel_shape == "圆形") {
             circle(0,0, pixel_size);
         }else if (pixel_shape == "三角形") {
@@ -297,6 +307,7 @@ if success or init_image:
     script = script.replace("$$roate_degree$$",str(roate_degree))
     script = script.replace("$$pixel_shape$$",pixel_shape)
     script = script.replace("$$pixel_opacity$$",str(pixel_opacity))
+    script = script.replace("$$rect_split_width_and_height$$",str(st.session_state.rect_split_width_and_height).lower())
     if pixel_shape == "矩形":
         script = script.replace("$$pixel_size_2$$",str(pixel_size_2))
     
