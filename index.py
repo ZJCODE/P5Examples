@@ -291,9 +291,9 @@ if success or init_image:
         }
         if (start_pixel_rotate && pixel_rotate_moed){
             pixel_roatate_time += 1;
-            rotate(($$roate_degree$$ + init_angle + pixel_roatate_time/5000 * pixel_roatate_speed ) * PI / 180);
+            rotate(($$roate_degree$$ + init_angle + pixel_roatate_time/8000 * pixel_roatate_speed ) * PI / 180);
         }else{
-            rotate(($$roate_degree$$ + init_angle + pixel_roatate_time/5000 * pixel_roatate_speed ) * PI / 180);
+            rotate(($$roate_degree$$ + init_angle + pixel_roatate_time/8000 * pixel_roatate_speed ) * PI / 180);
         }
         if (pixel_shape == "矩形") {
             rectMode(CENTER);
