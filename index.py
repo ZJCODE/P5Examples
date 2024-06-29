@@ -269,9 +269,9 @@ if success or init_image:
         push();
         translate(this.s.x + ( width/2 - img.width/2) ,this.s.y);
         if (color_angle_mode){
-            let init_angle = get_color_by_rgb(this.color[0],this.color[1],this.color[2]);
+            init_angle = get_color_by_rgb(this.color[0],this.color[1],this.color[2]);
         }else{
-            let init_angle = 0;
+            init_angle = 0;
         }
         rotate(($$roate_degree$$ + init_angle) * PI / 180);
         if (pixel_shape == "矩形") {
