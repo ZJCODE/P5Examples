@@ -244,6 +244,11 @@ if success or init_image:
         particles[i].update();
         particles[i].display();
     }
+
+    if (start_pixel_rotate){
+        pixel_roatate_time += 1;
+    }
+
     }
     
 
@@ -290,10 +295,9 @@ if success or init_image:
             init_angle = 0;
         }
         if (start_pixel_rotate && pixel_rotate_moed){
-            pixel_roatate_time += 1;
-            rotate(($$roate_degree$$ + init_angle + pixel_roatate_time/8000 * pixel_roatate_speed ) * PI / 180);
+            rotate(($$roate_degree$$ + init_angle + pixel_roatate_time/10 * pixel_roatate_speed ) * PI / 180);
         }else{
-            rotate(($$roate_degree$$ + init_angle + pixel_roatate_time/8000 * pixel_roatate_speed ) * PI / 180);
+            rotate(($$roate_degree$$ + init_angle + pixel_roatate_time/10 * pixel_roatate_speed ) * PI / 180);
         }
         if (pixel_shape == "矩形") {
             rectMode(CENTER);
