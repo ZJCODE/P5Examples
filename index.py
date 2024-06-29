@@ -34,7 +34,7 @@ if 'image_hash_set' not in st.session_state:
     st.session_state.image_hash_set = dict()
     
 if 'rect_split_width_and_height' not in st.session_state:
-    st.session_state.rect_split_width_and_height = False
+    st.session_state.rect_split_width_and_height = True
 
 if 'show_color' not in st.session_state:
     st.session_state.show_color = True
@@ -81,18 +81,18 @@ with c1:
         if st.session_state.show_color:
             pixel_step = st.slider("像素间距", 3, 50, 20, 1)
         else:
-            pixel_step = st.slider("像素间距", 1, 50, 20, 1,help="调整到小于3的时候需谨慎可能会较卡,最好先灰度过滤一下")
+            pixel_step = st.slider("像素间距", 1, 50, 25, 1,help="调整到小于3的时候需谨慎可能会较卡,最好先灰度过滤一下")
         if pixel_shape == "矩形" and st.session_state.rect_split_width_and_height:
             cc1,cc2 = st.columns(2)
             with cc1:
-                pixel_size = st.slider("像素长度", 1, 100, 40, 1)
+                pixel_size = st.slider("像素宽度", 1, 100, 1, 1)
             with cc2:
-                pixel_size_2 = st.slider("像素宽度", 1, 100, 40, 1)
+                pixel_size_2 = st.slider("像素长度", 1, 100, 50, 1)
         else:
             pixel_size = st.slider("像素大小", 1, 100, 40, 1)
             pixel_size_2 = 0
-        pixel_opacity = st.slider("像素透明度", 0, 255, 25, 1)
-        roate_degree = st.slider("像素旋转角度", 0, 360, 25, 1)
+        pixel_opacity = st.slider("像素透明度", 0, 255, 255, 1)
+        roate_degree = st.slider("像素旋转角度", 0, 360, 15, 1)
     with st.expander("交互参数"):
         damping = st.slider("像素灵敏度", 0.01, 0.2, 0.05, 0.01)
         force = st.slider("交互力度", 0, 20000, 3000, 500)
@@ -102,7 +102,7 @@ with c1:
             gray_filter = st.slider("灰度过滤", 0, 255, 250, 1)
         else:
             gray_filter = 255
-        color_angle_mode  = st.toggle("颜色角度", False)
+        color_angle_mode  = st.toggle("颜色角度", True)
         rect_split_width_and_height = st.toggle("矩形区分长宽", False,key="rect_split_width_and_height")
         wave_mode = st.toggle("波动模式", False)
         if wave_mode:
