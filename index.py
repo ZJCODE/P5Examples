@@ -96,12 +96,13 @@ with c1:
     with st.expander("交互参数"):
         damping = st.slider("像素灵敏度", 0.01, 0.2, 0.05, 0.01)
         force = st.slider("交互力度", 0, 20000, 3000, 500)
-    with st.expander("其他参数"):
+    with st.expander("进阶参数"):
         show_color = st.toggle("显示颜色", True,key="show_color")
         if not show_color:
             gray_filter = st.slider("灰度过滤", 0, 255, 250, 1)
         else:
             gray_filter = 255
+        color_angle_mode  = st.toggle("颜色角度", False)
         rect_split_width_and_height = st.toggle("矩形区分长宽", False,key="rect_split_width_and_height")
         wave_mode = st.toggle("波动模式", False)
         if wave_mode:
@@ -184,6 +185,7 @@ if success or init_image:
     let wave = $$wave_mode$$;
     let wave_size = $$wave_size$$;
     let pixel_opacity = $$pixel_opacity$$;
+    let color_angle_mode = $$color_angle_mode$$;
 
     let pixel_size_2 = $$pixel_size_2$$;
     let rect_split_width_and_height = $$rect_split_width_and_height$$;
@@ -266,8 +268,12 @@ if success or init_image:
         
         push();
         translate(this.s.x + ( width/2 - img.width/2) ,this.s.y);
-        // 30 度旋转
-        rotate($$roate_degree$$ * PI / 180);
+        if (color_angle_mode){
+            let init_angle = get_color_by_rgb(this.color[0],this.color[1],this.color[2]);
+        }else{
+            let init_angle = 0;
+        }
+        rotate(($$roate_degree$$ + init_angle) * PI / 180);
         if (pixel_shape == "矩形") {
             rectMode(CENTER);
             if (rect_split_width_and_height) {
@@ -275,6 +281,9 @@ if success or init_image:
             }else{
             rect(0,0, pixel_size,pixel_size);
             }
+            textAlign(CENTER, CENTER);
+            //text(this.color[0] + "," + this.color[1] + "," + this.color[2], 0, 0);
+            //text(init_angle, 0, 0);
         }else if (pixel_shape == "圆形") {
             circle(0,0, pixel_size);
         }else if (pixel_shape == "三角形") {
@@ -293,6 +302,28 @@ if success or init_image:
         h = size * 3**0.5 / 2;
         return [[0,-h/2],[size/2,h/2],[-size/2,h/2]];
     }
+
+    // 基于RGB区分成白红橙黄绿青蓝紫黑 9 个区间 返回 对应角度 0  40 80 120 160 200 240 280 320
+    function get_color_by_rgb(r,g,b){
+        let max = Math.max(r,g,b);
+        let min = Math.min(r,g,b);
+        let delta = max - min;
+        let angle = 0;
+        if (max == 0){
+            return angle;
+        }
+        if (max == r && g >= b){
+            angle = 40*(g - b)/delta;
+        }else if (max == r && g < b){
+            angle = 40*(g - b)/delta + 240;
+        }else if (max == g){
+            angle = 40*(b - r)/delta + 80;
+        }else if (max == b){
+            angle = 40*(r - g)/delta + 160;
+        }
+        return angle;
+    }
+        
     
     // 保存
     function keyPressed() {
@@ -331,6 +362,7 @@ if success or init_image:
     script = script.replace("$$rect_split_width_and_height$$",str(st.session_state.rect_split_width_and_height).lower())
     script = script.replace("$$wave_mode$$",str(wave_mode).lower())
     script = script.replace("$$wave_size$$",str(wave_size))
+    script = script.replace("$$color_angle_mode$$",str(color_angle_mode).lower())
     if pixel_shape == "矩形":
         script = script.replace("$$pixel_size_2$$",str(pixel_size_2))
     
