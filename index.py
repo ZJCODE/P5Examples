@@ -39,6 +39,9 @@ if 'rect_split_width_and_height' not in st.session_state:
 if 'show_color' not in st.session_state:
     st.session_state.show_color = True
 
+if 'pixel_rotate_moed' not in st.session_state:
+    st.session_state.pixel_rotate_moed = False
+
 page_select = st_navbar(    
                  pages=["ArtPlay Image Pixels"],
                  styles = styles,
@@ -95,7 +98,10 @@ with c1:
         roate_degree = st.slider("像素旋转角度", 0, 360, 15, 1)
     with st.expander("交互参数"):
         damping = st.slider("像素灵敏度", 0.01, 0.2, 0.05, 0.01)
-        force = st.slider("交互力度", 0, 20000, 3000, 500)
+        if st.session_state.pixel_rotate_moed:
+            force = st.slider("交互力度", 0, 20000, 0, 500,key="force")
+        else:
+            force = st.slider("交互力度", 0, 20000, 3000, 500,key="force_default")
     with st.expander("进阶参数"):
         show_color = st.toggle("显示颜色", True,key="show_color")
         if not show_color:
@@ -109,6 +115,11 @@ with c1:
             wave_size = st.slider("波动大小", 1, 50, 20, 1)
         else:
             wave_size = 0
+        pixel_rotate_moed = st.toggle("像素旋转", False,key="pixel_rotate_moed")
+        if pixel_rotate_moed:
+            pixel_roatate_speed = st.slider("旋转速度", 0, 30, 5, 1,help="点击屏幕开始和暂停旋转")
+        else:
+            pixel_roatate_speed = 0
     height = streamlit_js_eval(js_expressions='screen.height', key = 'SCR1',want_output = True)    
     
 with c2:
@@ -186,6 +197,10 @@ if success or init_image:
     let wave_size = $$wave_size$$;
     let pixel_opacity = $$pixel_opacity$$;
     let color_angle_mode = $$color_angle_mode$$;
+    let pixel_rotate_moed = $$pixel_rotate_moed$$;
+    let pixel_roatate_speed = $$pixel_roatate_speed$$;
+    let start_pixel_rotate = false;
+    let pixel_roatate_time = 0;
 
     let pixel_size_2 = $$pixel_size_2$$;
     let rect_split_width_and_height = $$rect_split_width_and_height$$;
@@ -207,6 +222,7 @@ if success or init_image:
             }
         }
         }
+        pixel_roatate_time = 0;
     }
 
     function setup() {
@@ -273,7 +289,12 @@ if success or init_image:
         }else{
             init_angle = 0;
         }
-        rotate(($$roate_degree$$ + init_angle) * PI / 180);
+        if (start_pixel_rotate && pixel_rotate_moed){
+            pixel_roatate_time += 1;
+            rotate(($$roate_degree$$ + init_angle + pixel_roatate_time/5000 * pixel_roatate_speed ) * PI / 180);
+        }else{
+            rotate(($$roate_degree$$ + init_angle + pixel_roatate_time/5000 * pixel_roatate_speed ) * PI / 180);
+        }
         if (pixel_shape == "矩形") {
             rectMode(CENTER);
             if (rect_split_width_and_height) {
@@ -325,6 +346,15 @@ if success or init_image:
     }
         
     
+    // click mouse to start rotate and end rotate
+    function mouseClicked() {
+        if (start_pixel_rotate){
+            start_pixel_rotate = false;
+        }else{
+            start_pixel_rotate = true;
+        }
+    }
+
     // 保存
     function keyPressed() {
     // 点击画面后按键盘G键 保存2秒的GIF
@@ -363,6 +393,8 @@ if success or init_image:
     script = script.replace("$$wave_mode$$",str(wave_mode).lower())
     script = script.replace("$$wave_size$$",str(wave_size))
     script = script.replace("$$color_angle_mode$$",str(color_angle_mode).lower())
+    script = script.replace("$$pixel_rotate_moed$$",str(pixel_rotate_moed).lower())
+    script = script.replace("$$pixel_roatate_speed$$",str(pixel_roatate_speed))
     if pixel_shape == "矩形":
         script = script.replace("$$pixel_size_2$$",str(pixel_size_2))
     
