@@ -181,7 +181,7 @@ if uploaded_file:
 if success or init_image:
     if init_image:
         url = init_image
-    note.caption("点击画面后按键盘G键保存2秒的GIF，按键盘S键保存当前图片，按键盘P键暂停/继续动画，按键盘R键重绘画面")
+    note.caption("点击画面后按键盘G键保存3秒的GIF，按键盘S键保存当前图片，按键盘P键暂停/继续动画，按键盘R键重绘画面")
     script = """
     
     let img;
@@ -361,9 +361,9 @@ if success or init_image:
 
     // 保存
     function keyPressed() {
-    // 点击画面后按键盘G键 保存2秒的GIF
+    // 点击画面后按键盘G键 保存3秒的GIF
     if (key === 'g') {
-    saveGif('mySketch', 2);
+    saveGif('mySketch', 3);
     }
     // 点击画面后按键盘S键 保存当前图片
     if (key === 's') {
