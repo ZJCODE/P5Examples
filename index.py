@@ -80,12 +80,12 @@ c1,c2 = st.columns([1,5])
 
 with c1:
     with st.expander("像素参数"):
-        pixel_shape = pills("像素形状", ["矩形","圆形","三角形"], key="pills_interactive",index=0)
+        pixel_shape = pills("像素形状", ["矩形","圆形","三角形","胶囊","线圆"], key="pills_interactive",index=0)
         if st.session_state.show_color:
             pixel_step = st.slider("像素间距", 3, 50, 20, 1)
         else:
             pixel_step = st.slider("像素间距", 1, 50, 25, 1,help="调整到小于3的时候需谨慎可能会较卡,最好先灰度过滤一下")
-        if pixel_shape == "矩形" and st.session_state.rect_split_width_and_height:
+        if (pixel_shape == "矩形" and st.session_state.rect_split_width_and_height) or pixel_shape  in ('胶囊','线圆'):
             cc1,cc2 = st.columns(2)
             with cc1:
                 pixel_size = st.slider("像素宽度", 1, 100, 1, 1)
@@ -324,7 +324,19 @@ if success or init_image:
         }else if (pixel_shape == "三角形") {
             let points = get_triangle_points(pixel_size);
             triangle(points[0][0],points[0][1],points[1][0],points[1][1],points[2][0],points[2][1]);
-        }else{
+        }else if (pixel_shape == "线圆") {
+            rectMode(CENTER);
+            rect(0,0, pixel_size,pixel_size_2);
+            circle(-pixel_size/2,0, pixel_size_2/2);
+            circle(pixel_size/2,0, pixel_size_2/2);
+        }
+        else if (pixel_shape == "胶囊") {
+            rectMode(CENTER);
+            rect(0,0, pixel_size,pixel_size_2);
+            circle(0,-pixel_size_2/2, pixel_size);
+            circle(0,pixel_size_2/2, pixel_size);
+        }
+        else{
             rect(0,0, pixel_size,pixel_size_2);
         }
         pop();
@@ -409,8 +421,7 @@ if success or init_image:
     script = script.replace("$$color_angle_mode$$",str(color_angle_mode).lower())
     script = script.replace("$$pixel_rotate_moed$$",str(pixel_rotate_moed).lower())
     script = script.replace("$$pixel_roatate_speed$$",str(pixel_roatate_speed))
-    if pixel_shape == "矩形":
-        script = script.replace("$$pixel_size_2$$",str(pixel_size_2))
+    script = script.replace("$$pixel_size_2$$",str(pixel_size_2))
     
     try:
         script = script.replace("$$GoodHeight$$",str(height - 490))
