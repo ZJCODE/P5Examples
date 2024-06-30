@@ -216,7 +216,7 @@ if success or init_image:
     let start_pixel_rotate = false;
     let pixel_roatate_time = 0;
     let text_for_image = "Create by ArtPlay";
-    let text_for_image_font = "Playwrite NZ";
+    let text_for_image_font = "Playwrite US Trad";
     let text_for_image_color = "#444444";
 
     let pixel_size_2 = $$pixel_size_2$$;
