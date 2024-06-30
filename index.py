@@ -84,7 +84,10 @@ with c1:
 
 
         if st.session_state.show_color:
-            pixel_step = st.slider("像素间距", 3, 100, 45, 1)
+            if pixel_shape == "矩形":
+                pixel_step = st.slider("像素间距", 3, 100, 25, 1)
+            else:
+                pixel_step = st.slider("像素间距", 3, 100, 45, 1)
         else:
             pixel_step = st.slider("像素间距", 1, 100, 25, 1,help="调整到小于3的时候需谨慎可能会较卡,最好先灰度过滤一下")
 
