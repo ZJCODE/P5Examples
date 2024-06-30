@@ -80,17 +80,28 @@ c1,c2 = st.columns([1,5])
 
 with c1:
     with st.expander("像素参数"):
-        pixel_shape = pills("像素形状", ["矩形","圆形","三角形","胶囊","线圆"], key="pills_interactive",index=0)
+        pixel_shape = pills("像素形状", ["矩形","圆形","三角形","胶囊"], key="pills_interactive",index=0)
+
+
         if st.session_state.show_color:
-            pixel_step = st.slider("像素间距", 3, 50, 20, 1)
+            pixel_step = st.slider("像素间距", 3, 100, 45, 1)
         else:
-            pixel_step = st.slider("像素间距", 1, 50, 25, 1,help="调整到小于3的时候需谨慎可能会较卡,最好先灰度过滤一下")
-        if (pixel_shape == "矩形" and st.session_state.rect_split_width_and_height) or pixel_shape  in ('胶囊','线圆'):
+            pixel_step = st.slider("像素间距", 1, 100, 25, 1,help="调整到小于3的时候需谨慎可能会较卡,最好先灰度过滤一下")
+
+        if (pixel_shape == "矩形" and st.session_state.rect_split_width_and_height) or pixel_shape  in ('胶囊'):
             cc1,cc2 = st.columns(2)
             with cc1:
-                pixel_size = st.slider("像素宽度", 1, 100, 1, 1)
+                if pixel_shape == '矩形':
+                    pixel_size = st.slider("像素宽度", 1, 100, 1, 1)
+                elif pixel_shape == '胶囊':
+                    pixel_size = st.slider("像素宽度", 1, 100, 10, 1)
+                else:
+                    pixel_size = st.slider("像素宽度", 1, 100, 1, 1)
             with cc2:
-                pixel_size_2 = st.slider("像素长度", 1, 100, 50, 1)
+                if pixel_shape == '胶囊':
+                    pixel_size_2 = st.slider("像素长度", 1, 100, 35, 1)
+                else:
+                    pixel_size_2 = st.slider("像素长度", 1, 100, 50, 1)
         else:
             pixel_size = st.slider("像素大小", 1, 100, 40, 1)
             pixel_size_2 = 0
@@ -311,6 +322,7 @@ if success or init_image:
         }
         if (pixel_shape == "矩形") {
             rectMode(CENTER);
+            noStroke();
             if (rect_split_width_and_height) {
             rect(0,0, pixel_size,pixel_size_2);
             }else{
@@ -320,23 +332,28 @@ if success or init_image:
             //text(this.color[0] + "," + this.color[1] + "," + this.color[2], 0, 0);
             //text(init_angle, 0, 0);
         }else if (pixel_shape == "圆形") {
+            noStroke();
             circle(0,0, pixel_size);
         }else if (pixel_shape == "三角形") {
+            noStroke();
             let points = get_triangle_points(pixel_size);
             triangle(points[0][0],points[0][1],points[1][0],points[1][1],points[2][0],points[2][1]);
         }else if (pixel_shape == "线圆") {
             rectMode(CENTER);
+            noStroke();
             rect(0,0, pixel_size,pixel_size_2);
             circle(-pixel_size/2,0, pixel_size_2/2);
             circle(pixel_size/2,0, pixel_size_2/2);
         }
         else if (pixel_shape == "胶囊") {
             rectMode(CENTER);
+            noStroke();
             rect(0,0, pixel_size,pixel_size_2);
-            circle(0,-pixel_size_2/2, pixel_size);
-            circle(0,pixel_size_2/2, pixel_size);
+            arc(0,pixel_size_2/2, pixel_size, pixel_size, 0, PI);
+            arc(0,-pixel_size_2/2, pixel_size, pixel_size, PI, TWO_PI);
         }
         else{
+            noStroke();
             rect(0,0, pixel_size,pixel_size_2);
         }
         pop();
