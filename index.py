@@ -351,7 +351,7 @@ if success or init_image:
         else if (pixel_shape == "胶囊") {
             rectMode(CENTER);
             noStroke();
-            rect(0,0, pixel_size,pixel_size_2);
+            rect(0,0, pixel_size,pixel_size_2+0.1); // 0.1 是为了避免出现间隙
             arc(0,pixel_size_2/2, pixel_size, pixel_size, 0, PI);
             arc(0,-pixel_size_2/2, pixel_size, pixel_size, PI, TWO_PI);
         }
