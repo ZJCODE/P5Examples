@@ -215,6 +215,9 @@ if success or init_image:
     let pixel_roatate_speed = $$pixel_roatate_speed$$;
     let start_pixel_rotate = false;
     let pixel_roatate_time = 0;
+    let text_for_image = "Create by ArtPlay";
+    let text_for_image_font = "Playwrite NZ";
+    let text_for_image_color = "#444444";
 
     let pixel_size_2 = $$pixel_size_2$$;
     let rect_split_width_and_height = $$rect_split_width_and_height$$;
@@ -224,7 +227,7 @@ if success or init_image:
     img = loadImage('$$image_url$$');
     }
     
-    
+
     function init_particles(){
         particles = [];
         for (let i = 0; i < img.width; i += step) {
@@ -253,6 +256,7 @@ if success or init_image:
         img.height = $$GoodHeight$$;
         img.width = img.height * ratio;
     }
+    
 
     img.resize(img.width, img.height);
 
@@ -260,6 +264,7 @@ if success or init_image:
 
     img.loadPixels();     
     init_particles();   
+
     }
 
     function draw() {
@@ -272,7 +277,14 @@ if success or init_image:
     if (start_pixel_rotate){
         pixel_roatate_time += 1;
     }
-
+    // 水印签名
+    textAlign(CENTER, CENTER);
+    textSize(height/40);
+    textFont(text_for_image_font);
+    stroke(255);
+    strokeWeight(2);
+    fill(text_for_image_color);
+    text(text_for_image, width/2, height * 0.95);
     }
     
 
