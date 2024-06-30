@@ -8,6 +8,15 @@ def get_html_content(script):
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
         <script>{script}</script>
         <meta charset="utf-8" />
+        <style>
+            html, body {{
+                height: 100%;
+                margin: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }}
+        </style>
     </head>
     <body></body>
     </html>

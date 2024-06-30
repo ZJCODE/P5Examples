@@ -124,7 +124,7 @@ with c1:
     
 with c2:
     try:
-        play = st.container(height=(height - 450))
+        play = st.container(height=(height - 430))
     except:
         play = st.container(height=540)
     note = st.empty()
@@ -226,14 +226,24 @@ if success or init_image:
     }
 
     function setup() {
-    createCanvas(windowWidth,$$GoodHeight$$);
-    let img_ratio = img.width/img.height;
-    let canvas_ratio = windowWidth/height;
-    if (img_ratio > canvas_ratio){
-        img.resize(windowWidth,0);
-    }else{
-        img.resize(0,height);
+    // max width: windowWidth
+    // max height: $$GoodHeight$$
+
+    // fit image to window within max height and max width
+    let ratio = img.width / img.height;
+    if (img.width > windowWidth) {
+        img.width = windowWidth;
+        img.height = img.width / ratio;
     }
+    if (img.height > $$GoodHeight$$) {
+        img.height = $$GoodHeight$$;
+        img.width = img.height * ratio;
+    }
+
+    img.resize(img.width, img.height);
+
+    createCanvas(img.width, img.height);
+
     img.loadPixels();     
     init_particles();   
     }
@@ -253,14 +263,14 @@ if success or init_image:
     
 
     function particle(target,color) {
-    this.s = createVector(random(width) - ( width/2 - 25 - img.width/2 ), random(height));
+    this.s = createVector(random(width), random(height));
     this.v = createVector(0,0);
     this.a = createVector(0,0);
     this.target = target;
     this.color = [color[0],color[1],color[2],pixel_opacity];
 
     this.update = () => {
-        let mouse = createVector(mouseX - ( width/2 - img.width/2 ), mouseY);
+        let mouse = createVector(mouseX, mouseY);
         let mouseVec = p5.Vector.sub( mouse, this.s );
         let d = p5.Vector.mag(mouseVec);
         if (wave){
@@ -288,7 +298,7 @@ if success or init_image:
         }
         
         push();
-        translate(this.s.x + ( width/2 - img.width/2) ,this.s.y);
+        translate(this.s.x,this.s.y);
         if (color_angle_mode){
             init_angle = get_color_by_rgb(this.color[0],this.color[1],this.color[2]);
         }else{
@@ -408,6 +418,16 @@ if success or init_image:
         script = script.replace("$$GoodHeight$$",str(500))
         print("GoodHeight Error")
     with play:
+        st.markdown("""
+    <style>
+    .center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%; /* Ensure iframe takes full height of the container */
+    }
+    </style>
+    """, unsafe_allow_html=True)
         try:
             draw_script(script,height = height - 490)
         except:
