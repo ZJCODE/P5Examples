@@ -82,14 +82,10 @@ with c1:
     with st.expander("像素参数"):
         pixel_shape = pills("像素形状", ["矩形","圆形","三角形","胶囊"], key="pills_interactive",index=0)
 
-
-        if st.session_state.show_color:
-            if pixel_shape == "矩形":
-                pixel_step = st.slider("像素间距", 3, 100, 25, 1)
-            else:
-                pixel_step = st.slider("像素间距", 3, 100, 45, 1)
+        if pixel_shape == "矩形":
+            pixel_step = st.slider("像素间距", 3, 100, 25, 1)
         else:
-            pixel_step = st.slider("像素间距", 1, 100, 25, 1,help="调整到小于3的时候需谨慎可能会较卡,最好先灰度过滤一下")
+            pixel_step = st.slider("像素间距", 3, 100, 45, 1)
 
         if (pixel_shape == "矩形" and st.session_state.rect_split_width_and_height) or pixel_shape  in ('胶囊'):
             cc1,cc2 = st.columns(2)
@@ -142,56 +138,55 @@ with c2:
     except:
         play = st.container(height=540)
     note = st.empty()
-uploaded_file = st.file_uploader("自定义上传图片", type=['jpg', 'png', 'jpeg'])
+    uploaded_file = st.file_uploader("自定义上传图片", type=['jpg', 'png', 'jpeg','webp'])
 
 
-
-# 使用requests post上传图片
-# https://doc.sm.ms/#api-User
-# https://sm.ms/home/
-url = "https://sm.ms/api/v2/upload"
-headers = {'Authorization': "LF743DhFsJMlBSkTIX5I7hqqDUvKOdzh"}
-success = False
-if uploaded_file:
-    if uploaded_file.size > 2*1024*1024:
-        # 使用 PIL 做压缩处理 不改变图片长宽比
-        from PIL import Image 
-        img = Image.open(uploaded_file)
-        img = img.convert('RGB')
-        img.thumbnail((2048, 2048)) # 限制图片最大边长为 2048
-        buffer = io.BytesIO()
-        img.save(buffer, format="JPEG")
-        buffer.seek(0)  # 重置 buffer 指针到起始位置
-    else:
-        buffer = uploaded_file.read()
-    
-    if hash(uploaded_file.name) not in st.session_state.image_hash_set:
-        files = {'smfile': buffer}
-        try:
-            with st.spinner("图片上传中..."):
-                response = requests.post(url, headers=headers, files=files)
-                if response.json()['code'] == "image_repeated":
-                    url = response.json()['images']
-                    success = True
-                    init_image = None
-                    # add url to hash set
-                    st.session_state.image_hash_set[hash(uploaded_file.name)] = url
-                elif response.json()['code'] == "success":
-                    url = response.json()['data']['url']
-                    delete_url = response.json()['data']['delete']
-                    success = True
-                    init_image = None
-                    # add url to hash set
-                    st.session_state.image_hash_set[hash(uploaded_file.name)] = url
-                else:
-                    st.error(f"图片上传失败 稍后再试")
-        except Exception as e:
-            st.error(f"图片上传失败 稍后再试")
-            st.error(e)
-    else:
-        url = st.session_state.image_hash_set[hash(uploaded_file.name)]
-        success = True
-        init_image = None
+    # 使用requests post上传图片
+    # https://doc.sm.ms/#api-User
+    # https://sm.ms/home/
+    url = "https://sm.ms/api/v2/upload"
+    headers = {'Authorization': "LF743DhFsJMlBSkTIX5I7hqqDUvKOdzh"}
+    success = False
+    if uploaded_file:
+        if uploaded_file.size > 2*1024*1024:
+            # 使用 PIL 做压缩处理 不改变图片长宽比
+            from PIL import Image 
+            img = Image.open(uploaded_file)
+            img = img.convert('RGB')
+            img.thumbnail((2048, 2048)) # 限制图片最大边长为 2048
+            buffer = io.BytesIO()
+            img.save(buffer, format="JPEG")
+            buffer.seek(0)  # 重置 buffer 指针到起始位置
+        else:
+            buffer = uploaded_file.read()
+        
+        if hash(uploaded_file.name) not in st.session_state.image_hash_set:
+            files = {'smfile': buffer}
+            try:
+                with st.spinner("图片上传中..."):
+                    response = requests.post(url, headers=headers, files=files)
+                    if response.json()['code'] == "image_repeated":
+                        url = response.json()['images']
+                        success = True
+                        init_image = None
+                        # add url to hash set
+                        st.session_state.image_hash_set[hash(uploaded_file.name)] = url
+                    elif response.json()['code'] == "success":
+                        url = response.json()['data']['url']
+                        delete_url = response.json()['data']['delete']
+                        success = True
+                        init_image = None
+                        # add url to hash set
+                        st.session_state.image_hash_set[hash(uploaded_file.name)] = url
+                    else:
+                        st.error(f"图片上传失败 稍后再试")
+            except Exception as e:
+                st.error(f"图片上传失败 稍后再试")
+                st.error(e)
+        else:
+            url = st.session_state.image_hash_set[hash(uploaded_file.name)]
+            success = True
+            init_image = None
 if success or init_image:
     if init_image:
         url = init_image
