@@ -80,7 +80,7 @@ c1,c2 = st.columns([1,5])
 
 with c1:
     with st.expander("像素参数",expanded=True):
-        pixel_shape = pills("像素形状", ["矩形","圆形","三角形","胶囊"], key="pills_interactive",index=0)
+        pixel_shape = pills("像素形状", ["矩形","圆形","三角形"], key="pills_interactive",index=0)
 
         if pixel_shape == "矩形":
             pixel_step = st.slider("像素间距", 3, 100, 25, 1)
