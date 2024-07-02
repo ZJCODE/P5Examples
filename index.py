@@ -6,6 +6,7 @@ from streamlit_pills import pills
 import io
 import cloudinary
 import cloudinary.uploader
+import cloudinary.api
 import time
 
 # Configuration       
@@ -15,6 +16,8 @@ cloudinary.config(
     api_secret = "Uzr-crPqTZ7GQrVl1y5ZrsXLNII", # Click 'View Credentials' below to copy your API secret
     secure=True
 )
+
+# result = cloudinary.api.resources(type="upload", max_results=100)  # 可以根据需要调整 max_results
 
 # Set page config
 st.set_page_config(page_title='Image Pixels',
