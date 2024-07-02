@@ -72,7 +72,7 @@ st.markdown(
     )
 
 if len(st.session_state.image_hash_set) == 0:
-    init_image = "https://s2.loli.net/2024/06/28/mdHhleWiyjwEtF6.jpg"
+    init_image = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/1024px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg"
 else:
     init_image = None
 
@@ -83,7 +83,7 @@ with c1:
         pixel_shape = pills("像素形状", ["矩形","圆形","三角形"], key="pills_interactive",index=0)
 
         if pixel_shape == "矩形":
-            pixel_step = st.slider("像素间距", 3, 100, 25, 1)
+            pixel_step = st.slider("像素间距", 3, 100, 20, 1)
         else:
             pixel_step = st.slider("像素间距", 3, 100, 45, 1)
 
@@ -91,7 +91,7 @@ with c1:
             cc1,cc2 = st.columns(2)
             with cc1:
                 if pixel_shape == '矩形':
-                    pixel_size = st.slider("像素宽度", 1, 100, 1, 1)
+                    pixel_size = st.slider("像素宽度", 1, 100, 5, 1)
                 elif pixel_shape == '胶囊':
                     pixel_size = st.slider("像素宽度", 1, 100, 10, 1)
                 else:
@@ -100,7 +100,7 @@ with c1:
                 if pixel_shape == '胶囊':
                     pixel_size_2 = st.slider("像素长度", 1, 100, 35, 1)
                 else:
-                    pixel_size_2 = st.slider("像素长度", 1, 100, 50, 1)
+                    pixel_size_2 = st.slider("像素长度", 1, 100, 25, 1)
         else:
             pixel_size = st.slider("像素大小", 1, 100, 40, 1)
             pixel_size_2 = 0
