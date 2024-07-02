@@ -86,7 +86,7 @@ st.markdown(
     )
 
 if len(st.session_state.image_hash_set) == 0:
-    init_image = "http://res.cloudinary.com/dvex4tfg6/image/upload/v1719906825/ArtPlay_demo.jpg"
+    init_image = "https://res.cloudinary.com/dvex4tfg6/image/upload/v1719909390/ArtPlay_zjun_demo_1415926.jpg"
 else:
     init_image = None
 
