@@ -6,6 +6,7 @@ from streamlit_pills import pills
 import io
 import cloudinary
 import cloudinary.uploader
+import time
 
 # Configuration       
 cloudinary.config( 
@@ -162,11 +163,6 @@ with c2:
         success = True
         init_image = None
 
-    # 使用requests post上传图片
-    # https://doc.sm.ms/#api-User
-    # https://sm.ms/home/
-    url = "https://sm.ms/api/v2/upload"
-    headers = {'Authorization': "LF743DhFsJMlBSkTIX5I7hqqDUvKOdzh"}
     if uploaded_file:
         input_url = None
         if uploaded_file.size > 2*1024*1024:
@@ -184,8 +180,11 @@ with c2:
         if hash(uploaded_file.name) not in st.session_state.image_hash_set:
             try:                
                 with st.spinner("图片上传中..."):
+                    # https://console.cloudinary.com/pm/c-4e2c8dff8262ebfec0ff3aaea4dccd/media-explorer
+                    # https://console.cloudinary.com/pm/c-4e2c8dff8262ebfec0ff3aaea4dccd/developer-dashboard
                     # Upload an image
-                    upload_result = cloudinary.uploader.upload(file=buffer,public_id=uploaded_file.name.split(".")[0])
+                    upload_result = cloudinary.uploader.upload(file=buffer,
+                                                               public_id= str(int(time.time())) + '_' +uploaded_file.name.split(".")[0])
                     # print(upload_result)
                     url = upload_result["secure_url"]
                     success = True
