@@ -186,7 +186,7 @@ with c2:
                 with st.spinner("图片上传中..."):
                     # Upload an image
                     upload_result = cloudinary.uploader.upload(file=buffer,public_id=uploaded_file.name.split(".")[0])
-                    print(upload_result)
+                    # print(upload_result)
                     url = upload_result["secure_url"]
                     success = True
                     init_image = None
