@@ -180,6 +180,7 @@ with c2:
         if hash(uploaded_file.name) not in st.session_state.image_hash_set:
             try:                
                 with st.spinner("图片上传中..."):
+                    # https://console.cloudinary.com/pm/c-4e2c8dff8262ebfec0ff3aaea4dccd/getting-started
                     # https://console.cloudinary.com/pm/c-4e2c8dff8262ebfec0ff3aaea4dccd/media-explorer
                     # https://console.cloudinary.com/pm/c-4e2c8dff8262ebfec0ff3aaea4dccd/developer-dashboard
                     # Upload an image
