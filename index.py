@@ -139,16 +139,24 @@ with c2:
     except:
         play = st.container(height=540)
     note = st.empty()
-    uploaded_file = st.file_uploader("自定义上传图片", type=['jpg', 'png', 'jpeg','webp'])
-
+    
+    success = False
+    # add input for image url
+    input_url = st.text_input("输入图片URL", value="",placeholder="输入图片URL (https开头) , 并按回车键确认")
+    
+    if input_url:
+        success = True
+        init_image = None
+    
+    uploaded_file = st.file_uploader("或者自定义上传图片", type=['jpg', 'png', 'jpeg','webp'])
 
     # 使用requests post上传图片
     # https://doc.sm.ms/#api-User
     # https://sm.ms/home/
     url = "https://sm.ms/api/v2/upload"
     headers = {'Authorization': "LF743DhFsJMlBSkTIX5I7hqqDUvKOdzh"}
-    success = False
     if uploaded_file:
+        input_url = None
         if uploaded_file.size > 2*1024*1024:
             # 使用 PIL 做压缩处理 不改变图片长宽比
             from PIL import Image 
@@ -191,6 +199,8 @@ with c2:
 if success or init_image:
     if init_image:
         url = init_image
+    if input_url:
+        url = input_url
     note.caption("点击画布后 , 按键盘R键重绘画面 , 按键盘P键暂停/继续动画 , 按键盘S键保存当前图片 , 按键盘G键保存3秒的GIF")
     script = """
     
