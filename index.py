@@ -4,6 +4,16 @@ import requests
 from streamlit_js_eval import streamlit_js_eval
 from streamlit_pills import pills
 import io
+import cloudinary
+import cloudinary.uploader
+
+# Configuration       
+cloudinary.config( 
+    cloud_name = "dvex4tfg6", 
+    api_key = "219979165586892", 
+    api_secret = "Uzr-crPqTZ7GQrVl1y5ZrsXLNII", # Click 'View Credentials' below to copy your API secret
+    secure=True
+)
 
 # Set page config
 st.set_page_config(page_title='Image Pixels',
@@ -142,13 +152,15 @@ with c2:
     
     success = False
     # add input for image url
-    input_url = st.text_input("输入图片URL", value="",placeholder="输入图片URL (https开头) , 并按回车键确认")
+
+    
+    uploaded_file = st.file_uploader("自定义上传图片", type=['jpg', 'png', 'jpeg','webp'])
+
+    input_url = st.text_input("或者输入图片URL", value="",placeholder="输入图片URL (https开头) , 并按回车键确认")
     
     if input_url:
         success = True
         init_image = None
-    
-    uploaded_file = st.file_uploader("或者自定义上传图片", type=['jpg', 'png', 'jpeg','webp'])
 
     # 使用requests post上传图片
     # https://doc.sm.ms/#api-User
@@ -170,25 +182,14 @@ with c2:
             buffer = uploaded_file.read()
         
         if hash(uploaded_file.name) not in st.session_state.image_hash_set:
-            files = {'smfile': buffer}
-            try:
+            try:                
                 with st.spinner("图片上传中..."):
-                    response = requests.post(url, headers=headers, files=files)
-                    if response.json()['code'] == "image_repeated":
-                        url = response.json()['images']
-                        success = True
-                        init_image = None
-                        # add url to hash set
-                        st.session_state.image_hash_set[hash(uploaded_file.name)] = url
-                    elif response.json()['code'] == "success":
-                        url = response.json()['data']['url']
-                        delete_url = response.json()['data']['delete']
-                        success = True
-                        init_image = None
-                        # add url to hash set
-                        st.session_state.image_hash_set[hash(uploaded_file.name)] = url
-                    else:
-                        st.error(f"图片上传失败 稍后再试")
+                    # Upload an image
+                    upload_result = cloudinary.uploader.upload(file=buffer,public_id=uploaded_file.name.split(".")[0])
+                    print(upload_result)
+                    url = upload_result["secure_url"]
+                    success = True
+                    init_image = None
             except Exception as e:
                 st.error(f"图片上传失败 稍后再试")
                 st.error(e)
