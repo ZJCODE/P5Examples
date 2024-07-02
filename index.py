@@ -47,8 +47,8 @@ styles = {
 if 'image_hash_set' not in st.session_state:
     st.session_state.image_hash_set = dict()
     
-if 'rect_split_width_and_height' not in st.session_state:
-    st.session_state.rect_split_width_and_height = True
+if 'split_width_and_height' not in st.session_state:
+    st.session_state.split_width_and_height = True
 
 if 'show_color' not in st.session_state:
     st.session_state.show_color = True
@@ -94,30 +94,38 @@ c1,c2 = st.columns([1,5])
 
 with c1:
     with st.expander("像素参数",expanded=True):
-        pixel_shape = pills("像素形状", ["矩形","圆形","三角形","胶囊"], key="pills_interactive",index=0)
+        pixel_shape = pills("像素形状", ["矩形","圆形","三角形","随机"], key="pills_interactive",index=0)
 
         if pixel_shape == "矩形":
             pixel_step = st.slider("像素间距", 3, 100, 20, 1)
         else:
             pixel_step = st.slider("像素间距", 3, 100, 45, 1)
 
-        if (pixel_shape == "矩形" and st.session_state.rect_split_width_and_height) or pixel_shape  in ('胶囊'):
+        if ((pixel_shape == "矩形" or pixel_shape == "圆形")) and st.session_state.split_width_and_height :
+            cc1,cc2 = st.columns(2)
+            if pixel_shape == "圆形":
+                pixel_shape = "胶囊"
+                with cc1:
+                    pixel_size = st.slider("像素半径", 1, 100, 20, 1)
+                with cc2:
+                    pixel_size_2 = st.slider("像素轴长", 1, 100, 1, 1)
+            else:
+                with cc1:
+                    pixel_size = st.slider("像素宽度", 1, 100, 5, 1)
+                with cc2:
+                    pixel_size_2 = st.slider("像素长度", 1, 100, 15, 1)
+            random_point_num = 0
+        elif pixel_shape == "随机":
             cc1,cc2 = st.columns(2)
             with cc1:
-                if pixel_shape == '矩形':
-                    pixel_size = st.slider("像素宽度", 1, 100, 8, 1)
-                elif pixel_shape == '胶囊':
-                    pixel_size = st.slider("像素宽度", 1, 100, 10, 1)
-                else:
-                    pixel_size = st.slider("像素宽度", 1, 100, 1, 1)
+                pixel_size = st.slider("像素大小", 1, 100, 20, 1)
             with cc2:
-                if pixel_shape == '胶囊':
-                    pixel_size_2 = st.slider("像素长度", 1, 100, 35, 1)
-                else:
-                    pixel_size_2 = st.slider("像素长度", 1, 100, 16, 1)
+                random_point_num = st.slider("随机点数", 1, 20, 4, 1)
+            pixel_size_2 = 0
         else:
             pixel_size = st.slider("像素大小", 1, 100, 40, 1)
             pixel_size_2 = 0
+            random_point_num = 0
         pixel_opacity = st.slider("像素透明度", 0, 255, 255, 1)
         roate_degree = st.slider("像素旋转角度", 0, 360, 15, 1)
     with st.expander("交互参数"):
@@ -133,7 +141,7 @@ with c1:
         else:
             gray_filter = 255
         color_angle_mode  = st.toggle("颜色角度", True)
-        rect_split_width_and_height = st.toggle("矩形区分长宽", False,key="rect_split_width_and_height")
+        split_width_and_height = st.toggle("区分长宽", False,key="split_width_and_height")
         wave_mode = st.toggle("波动模式", False)
         if wave_mode:
             wave_size = st.slider("波动大小", 1, 50, 20, 1)
@@ -228,9 +236,10 @@ if success or init_image:
     let text_for_image = "Create by ArtPlay";
     let text_for_image_font = "Playwrite US Trad";
     let text_for_image_color = "#444444";
+    let random_point_num = $$random_point_num$$;
 
     let pixel_size_2 = $$pixel_size_2$$;
-    let rect_split_width_and_height = $$rect_split_width_and_height$$;
+    let split_width_and_height = $$split_width_and_height$$;
 
     function preload() {
     // 加载图片
@@ -304,6 +313,10 @@ if success or init_image:
     this.a = createVector(0,0);
     this.target = target;
     this.color = [color[0],color[1],color[2],pixel_opacity];
+    this.random_points = [];
+    for (let i = 0; i < random_point_num; i++) {
+    this.random_points.push([random(0,pixel_size),random(0,pixel_size)]);
+    }
 
     this.update = () => {
         let mouse = createVector(mouseX, mouseY);
@@ -348,7 +361,7 @@ if success or init_image:
         if (pixel_shape == "矩形") {
             rectMode(CENTER);
             noStroke();
-            if (rect_split_width_and_height) {
+            if (split_width_and_height) {
             rect(0,0, pixel_size,pixel_size_2);
             }else{
             rect(0,0, pixel_size,pixel_size);
@@ -379,7 +392,11 @@ if success or init_image:
         }
         else{
             noStroke();
-            rect(0,0, pixel_size,pixel_size_2);
+            beginShape();
+            for (let i = 0; i < this.random_points.length; i++) {
+            vertex(this.random_points[i][0],this.random_points[i][1]);
+            }
+            endShape(CLOSE);
         }
         pop();
     }
@@ -457,13 +474,14 @@ if success or init_image:
     script = script.replace("$$roate_degree$$",str(roate_degree))
     script = script.replace("$$pixel_shape$$",pixel_shape)
     script = script.replace("$$pixel_opacity$$",str(pixel_opacity))
-    script = script.replace("$$rect_split_width_and_height$$",str(st.session_state.rect_split_width_and_height).lower())
+    script = script.replace("$$split_width_and_height$$",str(st.session_state.split_width_and_height).lower())
     script = script.replace("$$wave_mode$$",str(wave_mode).lower())
     script = script.replace("$$wave_size$$",str(wave_size))
     script = script.replace("$$color_angle_mode$$",str(color_angle_mode).lower())
     script = script.replace("$$pixel_rotate_moed$$",str(pixel_rotate_moed).lower())
     script = script.replace("$$pixel_roatate_speed$$",str(pixel_roatate_speed))
     script = script.replace("$$pixel_size_2$$",str(pixel_size_2))
+    script = script.replace("$$random_point_num$$",str(random_point_num))
     
     try:
         script = script.replace("$$GoodHeight$$",str(height - 490))
