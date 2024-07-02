@@ -65,7 +65,7 @@ st.markdown(
         }
         </style>
         <div class="note">
-        上传图片,调整参数去感受不同的效果吧! 本交互由 p5.js 构建, 基础使用可参考 <a href="https://p5refs.streamlit.app/" target="_blank">速查手册</a> , 此外可去 <a href="https://artplay.streamlit.app/" target="_blank">ArtPlay</a> 进一步学习
+        上传图片,调整参数去感受不同的效果吧! 本交互由 p5.js 构建, 基础使用可参考 <a href="https://p5refs.streamlit.app/" target="_blank">速查手册</a> , 此外可去 <a href="https://artplay-code.streamlit.app/" target="_blank">ArtPlay Code</a> 进一步学习
         </div>
         """,
         unsafe_allow_html=True
