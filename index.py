@@ -185,7 +185,7 @@ with c2:
                     # https://console.cloudinary.com/pm/c-4e2c8dff8262ebfec0ff3aaea4dccd/developer-dashboard
                     # Upload an image
                     upload_result = cloudinary.uploader.upload(file=buffer,
-                                                               public_id= str(int(time.time())) + '_' +uploaded_file.name.split(".")[0])
+                                                               public_id= 'ArtPlay_' + str(int(time.time())) + '_' +uploaded_file.name.split(".")[0])
                     # print(upload_result)
                     url = upload_result["secure_url"]
                     success = True
