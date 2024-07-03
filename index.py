@@ -94,8 +94,15 @@ c1,c2 = st.columns([1,5])
 
 with c1:
     with st.expander("像素参数",expanded=True):
-        pixel_shape = pills("像素形状", ["矩形","圆形","三角形","随机"], key="pills_interactive",index=0)
+        pixel_shape = pills("像素形状", ["矩形","圆形","三角形","随机","符号"], key="pills_interactive",index=0)
 
+        if pixel_shape == "符号":
+            symbol = st.text_input("符号", value="",help="许多有趣的符号可参考 Noto Sans Symbols 2")
+            if symbol == "":
+                symbol = "✎"
+        else:
+            symbol = "🕮"
+        
         if pixel_shape == "矩形":
             pixel_step = st.slider("像素间距", 3, 100, 20, 1)
         else:
@@ -237,6 +244,7 @@ if success or init_image:
     let text_for_image_font = "Playwrite US Trad";
     let text_for_image_color = "#444444";
     let random_point_num = $$random_point_num$$;
+    let symbol = "$$symbol$$";
 
     let pixel_size_2 = $$pixel_size_2$$;
     let split_width_and_height = $$split_width_and_height$$;
@@ -382,14 +390,18 @@ if success or init_image:
             rect(0,0, pixel_size,pixel_size_2);
             circle(-pixel_size/2,0, pixel_size_2/2);
             circle(pixel_size/2,0, pixel_size_2/2);
-        }
-        else if (pixel_shape == "胶囊") {
+        }else if (pixel_shape == "胶囊") {
             rectMode(CENTER);
             noStroke();
             rect(0,0, pixel_size,pixel_size_2+0.1); // 0.1 是为了避免出现间隙
             arc(0,pixel_size_2/2, pixel_size, pixel_size, 0, PI);
             arc(0,-pixel_size_2/2, pixel_size, pixel_size, PI, TWO_PI);
-        }
+        }else if (pixel_shape == "符号") {
+            textAlign(CENTER, CENTER);
+            textFont("Noto Sans Symbols 2");
+            textSize(pixel_size);
+            text(symbol, 0, 0);
+            }
         else{
             noStroke();
             beginShape();
@@ -482,6 +494,7 @@ if success or init_image:
     script = script.replace("$$pixel_roatate_speed$$",str(pixel_roatate_speed))
     script = script.replace("$$pixel_size_2$$",str(pixel_size_2))
     script = script.replace("$$random_point_num$$",str(random_point_num))
+    script = script.replace("$$symbol$$",symbol)
     
     try:
         script = script.replace("$$GoodHeight$$",str(height - 490))
